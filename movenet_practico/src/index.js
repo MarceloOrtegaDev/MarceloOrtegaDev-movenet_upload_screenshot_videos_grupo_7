@@ -42,17 +42,26 @@ async function detectFrame() {
 
 async function runDetection() {
   status.innerText = 'Cargando modelo...';
-  console.log('Cargando tf...');
   await tf.ready();
-  console.log('tf listo');
-  detector = await createDetector();
-  console.log('Detector creado:', detector);
-  status.innerText = 'Modelo cargado. Procesando video...';
 
-  camera.video.play();
-  camera.updateCanvasSize();
+  const modelSelect = document.getElementById('modelTypeSelect');
+  STATE.modelConfig.type = modelSelect.value;
+
+  detector = await createDetector();
+  status.innerText = 'Modelo cargado.';
+
+  const useCamera = document.getElementById('useCamera').checked;
+
+  if (useCamera) {
+    await camera.startCamera();
+  } else {
+    camera.video.play();
+    camera.updateCanvasSize();
+  }
+
   detectFrame();
 }
+
 
 
 function handleVideoUpload(event) {

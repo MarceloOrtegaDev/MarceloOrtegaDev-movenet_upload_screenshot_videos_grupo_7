@@ -59,6 +59,25 @@ export class Context {
     this.ctx.stroke(circle);
   }
 
+  async startCamera() {
+  const constraints = {
+    video: { facingMode: 'user', width: 640, height: 480 },
+    audio: false
+  };
+
+  const stream = await navigator.mediaDevices.getUserMedia(constraints);
+  this.video.srcObject = stream;
+
+  await new Promise(resolve => {
+    this.video.onloadedmetadata = () => {
+      this.video.play();
+      this.updateCanvasSize();
+      resolve();
+    };
+  });
+}
+
+
   drawSkeleton(keypoints) {
     const adjacentPairs = posedetection.util.getAdjacentPairs(STATE.model);
     this.ctx.strokeStyle = 'White';
@@ -77,3 +96,5 @@ export class Context {
     }
   }
 }
+
+

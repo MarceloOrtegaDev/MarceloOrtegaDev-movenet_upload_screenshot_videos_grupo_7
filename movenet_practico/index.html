@@ -9,9 +9,17 @@
   <body>
     <h1>Detección de Poses con MoveNet</h1>
     <input type="file" id="videofile" accept="video/*" />
+    <label for="modelTypeSelect">Tipo de modelo:</label>
+    <select id="modelTypeSelect">
+      <option value="lightning" selected>Lightning (rápido)</option>
+      <option value="thunder">Thunder (más preciso)</option>
+    </select>
+
     <div>
       <button id="submit">Detectar Poses</button>
       <button id="download">Descargar Imagen</button>
+      <input type="checkbox" id="useCamera" />
+      <label for="useCamera">Usar cámara en vivo</label>
     </div>
 
     <div id="canvas-wrapper">
