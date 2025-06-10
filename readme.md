@@ -1,12 +1,14 @@
 # Detección de Poses con MoveNet
 
 Este proyecto implementa un sistema de detección de poses humanas utilizando el modelo **MoveNet (Lightning)** de TensorFlow.js. Permite cargar un video desde el dispositivo del usuario, procesarlo fotograma a fotograma y mostrar los puntos clave del cuerpo humano sobre un lienzo (`canvas`), utilizando técnicas de inteligencia artificial en el navegador.
+Se incluyó la detección de poses a través de la cámara en la vida real.
 ### Se inicializó el proyecto con vite como una primera intención de poder subir el build del proyecto a vercel lo cual no pudimos concretar aún.
 
 ## 🧠 Tecnologías utilizadas
 
 - HTML5 y JavaScript moderno (ES Modules)
 - TensorFlow.js
+- @tensorflow/tfjs-backend-webgl
 - @tensorflow-models/pose-detection (MoveNet)
 - Canvas para renderizado
 
