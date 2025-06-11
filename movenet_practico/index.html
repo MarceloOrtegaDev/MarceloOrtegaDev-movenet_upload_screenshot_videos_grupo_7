@@ -8,7 +8,7 @@
   </head>
   <body>
     <h1>Detección de Poses con MoveNet</h1>
-    <input type="file" id="videofile" accept="video/*" />
+    <input type="file" id="videofile" accept="video/*,image/*" />
     <label for="modelTypeSelect">Tipo de modelo:</label>
     <select id="modelTypeSelect">
       <option value="lightning" selected>Lightning (rápido)</option>
@@ -29,11 +29,4 @@
 
     <script type="module" src="/src/index.js"></script>
   </body>
-  <script>document.getElementById('download').addEventListener('click', () => {
-  const link = document.createElement('a');
-  link.download = 'deteccion_pose.png';
-  link.href = camera.canvas.toDataURL('image/png');
-  link.click();
-});
-</script>
 </html>

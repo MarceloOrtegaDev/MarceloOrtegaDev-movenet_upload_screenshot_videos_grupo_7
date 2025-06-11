@@ -6,43 +6,46 @@ export class Context {
     this.video = document.getElementById('video');
     this.canvas = document.getElementById('output');
     this.ctx = this.canvas.getContext('2d');
+    this.image = null;
   }
 
- updateCanvasSize() {
-  this.canvas.width = this.video.videoWidth;
-  this.canvas.height = this.video.videoHeight;
-
-  const wrapper = document.getElementById('canvas-wrapper');
-  wrapper.style.width = `${this.video.videoWidth}px`;
-  wrapper.style.height = `${this.video.videoHeight}px`;
-
-  console.log('Canvas size actualizado:', this.canvas.width, this.canvas.height);
-}
-
-
+  updateCanvasSize() {
+    if (this.image) {
+      this.canvas.width = this.image.naturalWidth;
+      this.canvas.height = this.image.naturalHeight;
+    } else {
+      this.canvas.width = this.video.videoWidth;
+      this.canvas.height = this.video.videoHeight;
+    }
+    const wrapper = document.getElementById('canvas-wrapper');
+    wrapper.style.width = `${this.canvas.width}px`;
+    wrapper.style.height = `${this.canvas.height}px`;
+    console.log('Canvas size actualizado:', this.canvas.width, this.canvas.height);
+  }
 
   drawCtx() {
-    this.ctx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
+    if (this.image) {
+      this.ctx.drawImage(this.image, 0, 0, this.canvas.width, this.canvas.height);
+    } else {
+      this.ctx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
+    }
   }
 
   drawResults(poses) {
-  console.log('Poses recibidas:', poses);
-  for (const pose of poses) {
-    if (pose.keypoints) {
-      console.log('Keypoints:', pose.keypoints);
-      this.drawKeypoints(pose.keypoints);
-      this.drawSkeleton(pose.keypoints);
+    console.log('Poses recibidas:', poses);
+    for (const pose of poses) {
+      if (pose.keypoints) {
+        console.log('Keypoints:', pose.keypoints);
+        this.drawKeypoints(pose.keypoints);
+        this.drawSkeleton(pose.keypoints);
+      }
     }
   }
-}
-
 
   drawKeypoints(keypoints) {
     const keypointInd = posedetection.util.getKeypointIndexBySide(STATE.model);
-
     this.ctx.fillStyle = 'White';
     this.ctx.lineWidth = DEFAULT_LINE_WIDTH;
-
     for (const i of keypointInd.middle) this.drawCircle(keypoints[i]);
     this.ctx.fillStyle = 'Green';
     for (const i of keypointInd.left) this.drawCircle(keypoints[i]);
@@ -60,29 +63,25 @@ export class Context {
   }
 
   async startCamera() {
-  const constraints = {
-    video: { facingMode: 'user', width: 640, height: 480 },
-    audio: false
-  };
-
-  const stream = await navigator.mediaDevices.getUserMedia(constraints);
-  this.video.srcObject = stream;
-
-  await new Promise(resolve => {
-    this.video.onloadedmetadata = () => {
-      this.video.play();
-      this.updateCanvasSize();
-      resolve();
+    const constraints = {
+      video: { facingMode: 'user', width: 640, height: 480 },
+      audio: false
     };
-  });
-}
-
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    this.video.srcObject = stream;
+    await new Promise(resolve => {
+      this.video.onloadedmetadata = () => {
+        this.video.play();
+        this.updateCanvasSize();
+        resolve();
+      };
+    });
+  }
 
   drawSkeleton(keypoints) {
     const adjacentPairs = posedetection.util.getAdjacentPairs(STATE.model);
     this.ctx.strokeStyle = 'White';
     this.ctx.lineWidth = DEFAULT_LINE_WIDTH;
-
     for (const [i, j] of adjacentPairs) {
       const kp1 = keypoints[i];
       const kp2 = keypoints[j];
@@ -96,5 +95,3 @@ export class Context {
     }
   }
 }
-
-
